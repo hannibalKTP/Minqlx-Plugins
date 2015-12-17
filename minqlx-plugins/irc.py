@@ -74,20 +74,23 @@ class irc(minqlx.Plugin):
             self.irc.start()
             self.logger.info("Connecting to {}...".format(self.server))
 
-    def handle_game_start(self, data):
+    def handle_game_start(self, player, msg, channel):
         if self.irc and self.relay:
             text = "The game has started."
             self.irc.msg(self.relay, self.translate_colors(text))
+            channel.reply(text)
 
-    def handle_game_end(self, data):
+    def handle_game_end(self, player, msg, channel):
         if self.irc and self.relay:
             text = "The game had ended. Final Scores: ^1Red Team: {}^0, ^4Blue Team: {}^0.".format(self.game.red_score, self.game.blue_score)
             self.irc.msg(self.relay, self.translate_colors(text))
+            channel.reply(text)
 
-    def handle_round_end(self, data):
+    def handle_round_end(self, player, msg, channel):
         if self.irc and self.relay:
             text = "Round ended: ^1Red Team: {}^0, ^4Blue Team {}^0.".format(self.game.red_score, self.game.blue_score)
             self.irc.msg(self.relay, self.translate_colors(text))
+            channel.reply(text)
 
     def handle_chat(self, player, msg, channel):
         if self.irc and self.relay and channel == "chat":
