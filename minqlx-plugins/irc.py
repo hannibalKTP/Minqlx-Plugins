@@ -32,13 +32,14 @@ COLORS = ("\x0301", "\x0304", "\x0303", "\x0308", "\x0302", "\x0311", "\x0306", 
 
 class irc(minqlx.Plugin):
     def __init__(self):
-        self.add_hook("round_end", self.handle_round_end)
-        self.add_hook("game_start", self.handle_game_start)
-        self.add_hook("game_end", self.handle_game_end)
         self.add_hook("chat", self.handle_chat, priority=minqlx.PRI_LOWEST)
         self.add_hook("unload", self.handle_unload)
         self.add_hook("player_connect", self.handle_player_connect, priority=minqlx.PRI_LOWEST)
         self.add_hook("player_disconnect", self.handle_player_disconnect, priority=minqlx.PRI_LOWEST)
+
+        self.add_hook("round_end", self.handle_round_end)
+        self.add_hook("game_start", self.handle_game_start)
+        self.add_hook("game_end", self.handle_game_end)
 
         self.set_cvar_once("qlx_ircServer", "irc.quakenet.org")
         self.set_cvar_once("qlx_ircRelayChannel", "")
@@ -73,31 +74,20 @@ class irc(minqlx.Plugin):
             self.irc.start()
             self.logger.info("Connecting to {}...".format(self.server))
 
-    def handle_game_start(self, game):
-        self.console("game start")
-        if self.irc and self.relay:
-            text = "The game has started."
-            self.irc.msg(self.relay, self.translate_colors(text))
-            self.console(text)
+    def handle_game_start(self, data):
+        text = "The game has started."
+        self.irc.msg(self.relay, self.translate_colors(text))
 
     def handle_game_end(self, data):
-        self.console("game end")
-        if self.irc and self.relay:
-            text = "The game had ended. Final Scores: ^1Red Team: {}^0, ^4Blue Team: {}^0.".format(self.game.red_score, self.game.blue_score)
-            self.irc.msg(self.relay, self.translate_colors(text))
-            self.console(text)
+        text = "The game had ended. Final Scores: ^1Red Team: {}^0, ^4Blue Team: {}^0.".format(self.game.red_score, self.game.blue_score)
+        self.irc.msg(self.relay, self.translate_colors(text))
 
     def handle_round_end(self, data):
-        self.console("round end")
-        if self.irc and self.relay:
-            text = "Round ended: ^1Red Team: {}^0, ^4Blue Team {}^0.".format(self.game.red_score, self.game.blue_score)
-            self.irc.msg(self.relay, self.translate_colors(text))
-            self.console(text)
+        text = "Round ended: ^1Red Team: {}^0, ^4Blue Team {}^0.".format(self.game.red_score, self.game.blue_score)
+        self.irc.msg(self.relay, self.translate_colors(text))
 
     def handle_chat(self, player, msg, channel):
-        self.console("chat")
         if self.irc and self.relay and channel == "chat":
-            self.console("text")
             text = "^7<{}> ^2{}".format(player.name, msg)
             self.irc.msg(self.relay, self.translate_colors(text))
 
