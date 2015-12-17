@@ -32,14 +32,13 @@ COLORS = ("\x0301", "\x0304", "\x0303", "\x0308", "\x0302", "\x0311", "\x0306", 
 
 class irc(minqlx.Plugin):
     def __init__(self):
+        self.add_hook("round_end", self.handle_round_end)
+        self.add_hook("game_start", self.handle_game_start)
+        self.add_hook("game_end", self.handle_game_end)
         self.add_hook("chat", self.handle_chat, priority=minqlx.PRI_LOWEST)
         self.add_hook("unload", self.handle_unload)
         self.add_hook("player_connect", self.handle_player_connect, priority=minqlx.PRI_LOWEST)
         self.add_hook("player_disconnect", self.handle_player_disconnect, priority=minqlx.PRI_LOWEST)
-
-        self.add_hook("round_end", self.handle_round_end)
-        self.add_hook("game_start", self.handle_game_start)
-        self.add_hook("game_end", self.handle_game_end)
 
         self.set_cvar_once("qlx_ircServer", "irc.quakenet.org")
         self.set_cvar_once("qlx_ircRelayChannel", "")
