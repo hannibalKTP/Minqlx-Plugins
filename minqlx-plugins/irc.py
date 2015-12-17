@@ -95,7 +95,9 @@ class irc(minqlx.Plugin):
             self.console(text)
 
     def handle_chat(self, player, msg, channel):
+        self.console("chat")
         if self.irc and self.relay and channel == "chat":
+            self.console("text")
             text = "^7<{}> ^2{}".format(player.name, msg)
             self.irc.msg(self.relay, self.translate_colors(text))
 
